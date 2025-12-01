@@ -1,0 +1,48 @@
+.dice-scene {
+  width: 120px;
+  height: 120px;
+  perspective: 700px;
+  cursor: pointer;
+}
+
+.dice {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 1.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.dice.rolling {
+  animation: spin 0.7s linear infinite;
+}
+
+.face {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: white;
+  border: 3px solid #ffc107;
+  border-radius: 16px;
+}
+
+.dot {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #000;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.face-1 { transform: translateZ(60px); }
+.face-2 { transform: rotateY(90deg) translateZ(60px); }
+.face-3 { transform: rotateY(180deg) translateZ(60px); }
+.face-4 { transform: rotateY(-90deg) translateZ(60px); }
+.face-5 { transform: rotateX(90deg) translateZ(60px); }
+.face-6 { transform: rotateX(-90deg) translateZ(60px); }
+
+@keyframes spin {
+  0% { transform: rotateX(0deg) rotateY(0deg); }
+  100% { transform: rotateX(360deg) rotateY(360deg); }
+}
