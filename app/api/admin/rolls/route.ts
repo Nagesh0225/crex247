@@ -1,3 +1,31 @@
+// import { NextResponse } from "next/server";
+// import { connectDB } from "@/app/lib/db";
+// import Roll from "@/app/models/Roll";
+
+// export async function GET() {
+//   try {
+//     await connectDB();
+//     const rolls = await Roll.find().sort({ createdAt: -1 });
+//     return NextResponse.json(rolls, { status: 200 });
+//   } catch (error) {
+//     console.error(error);
+//     return NextResponse.json({ message: "Server error" }, { status: 500 });
+//   }
+// }
+
+// export async function POST(req: Request) {
+//   try {
+//     await connectDB();
+//     const { number, reward, code, instantId } = await req.json();
+//     // Save all required fields
+//     const roll = await Roll.create({ number, reward, code, instantId });
+//     return NextResponse.json({ roll }, { status: 201 });
+//   } catch (error) {
+//     console.error(error);
+//     return NextResponse.json({ message: "Server error" }, { status: 500 });
+//   }
+// }
+
 import { NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/db";
 import Roll from "@/app/models/Roll";
@@ -5,37 +33,45 @@ import Roll from "@/app/models/Roll";
 export async function GET() {
   try {
     await connectDB();
+
     const rolls = await Roll.find().sort({ createdAt: -1 });
-    return NextResponse.json(rolls);
+
+    // ✅ ALWAYS SAME FORMAT
+    return NextResponse.json(
+      { data: rolls },
+      { status: 200 }
+    );
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch rolls" }, { status: 500 });
+    console.error("GET ERROR:", error);
+    return NextResponse.json(
+      { data: [] },
+      { status: 500 }
+    );
   }
 }
 
 export async function POST(req: Request) {
   try {
     await connectDB();
-    const { number, code } = await req.json();
 
-    const probabilityMap: Record<number, number> = {
-      1: 0.15,
-      2: 0.15,
-      3: 0.20,
-      4: 0.20,
-      5: 0.25,
-      6: 0.25,
-    };
+    const { number, reward, code, instantId } = await req.json();
 
     const roll = await Roll.create({
       number,
+      reward,
       code,
-      probability: probabilityMap[number],
-      claimed: true, // ✅ guaranteed
-      claimedAt: new Date(),
+      instantId,
     });
 
-    return NextResponse.json({ roll });
+    return NextResponse.json(
+      { roll },
+      { status: 201 }
+    );
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create roll" }, { status: 500 });
+    console.error("POST ERROR:", error);
+    return NextResponse.json(
+      { message: "Server error" },
+      { status: 500 }
+    );
   }
 }

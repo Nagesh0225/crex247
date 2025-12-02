@@ -1,7 +1,10 @@
-"use client";
-import React from "react";
-import AdminDashboard from "../Components/Admindashboard";
-  
+import AdminLayout from "./Adminsidebar";
+import AdminDashboard from "./Admindashboard";
+
 export default function AdminPage() {
-  return <AdminDashboard />;
+  return (
+    <AdminLayout>
+      <AdminDashboard />
+    </AdminLayout>
+  );
 }
