@@ -1,8 +1,26 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const Deposit = () => {
-  const whatsappNumber = "917440505220";
+const Withdrow = () => {
+  const [whatsapp, setWhatsapp] = useState<any>(null);
 
+ 
+  useEffect(() => {
+    const fetchNumber = async () => {
+      try {
+        
+        const res = await axios.get("/api/whatsapp");
+       
+        setWhatsapp(res.data || null);
+      } catch (error) {
+        console.error("Failed to fetch WhatsApp number", error);
+        setWhatsapp(null);
+      }
+    };
+
+    fetchNumber();
+  }, []);
 
 
   const withdrawMessage = `Hello Sir,
@@ -17,16 +35,18 @@ I need help with *WITHDRAW*.
 
 Please process my withdrawal request as soon as possible.`;
 
-
-  const withdrawLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    withdrawMessage
-  )}`;
+  const supportNumber = whatsapp?.withdrawal || "";
+  const withdrawLink = supportNumber
+    ? `https://wa.me/${supportNumber}?text=${encodeURIComponent(
+        withdrawMessage
+      )}`
+    : "#";
 
   return (
     <div className="container-fluid py-4 bg-dark text-white shadow rounded">
       <div className="container">
         <div className="row align-items-center justify-content-center text-center text-md-start">
-          {/* Logo */}
+
           <div className="col-12 col-md-3 mb-3 mb-md-0 text-center">
             <img
               src="/logow.jpeg"
@@ -34,9 +54,8 @@ Please process my withdrawal request as soon as possible.`;
               className="img-fluid"
               style={{ maxHeight: "80px" }}
             />
-          </div >
+          </div>
 
-          {/* Text */}
           <div className="col-12 col-md-5 mb-3 mb-md-0 text-center">
             <h5 className="fw-bold mb-1 text-warning">
               Need Help With Money?
@@ -46,10 +65,8 @@ Please process my withdrawal request as soon as possible.`;
             </p>
           </div>
 
-          {/* Buttons */}
+         
           <div className="col-12 col-md-4 text-center">
-          
-
             <a
               href={withdrawLink}
               target="_blank"
@@ -59,10 +76,11 @@ Please process my withdrawal request as soon as possible.`;
               💸 Withdraw Support
             </a>
           </div>
+
         </div>
       </div>
     </div>
   );
 };
 
-export default Deposit;
+export default Withdrow;

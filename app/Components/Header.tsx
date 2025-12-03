@@ -1,14 +1,29 @@
 "use client";
-import React from "react";
-
-const ADMIN_NUMBER = "917440505220";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const Header: React.FC = () => {
-  const whatsappLink =
-    "https://wa.me/" +
-    ADMIN_NUMBER +
-    "?text=" +
-    encodeURIComponent("Hi, I need support regarding Crex247.");
+  const [whatsapp, setWhatsapp] = useState<any>(null);
+
+  // ✅ FETCH NUMBER FROM BACKEND
+  useEffect(() => {
+    const fetchNumber = async () => {
+      try {
+       
+        const res = await axios.get("/api/whatsapp");
+        
+        setWhatsapp(res.data || null);
+      } catch (error) {
+        console.error("Failed to fetch WhatsApp number", error);
+        setWhatsapp(null);
+      }
+    };
+
+    fetchNumber();
+  }, []);
+
+  const supportNumber = whatsapp?.support || "";
+  const whatsappLink = `https://wa.me/${supportNumber}?text=${encodeURIComponent("Hi, I need support regarding Crex247.")}`;
 
   return (
     <header

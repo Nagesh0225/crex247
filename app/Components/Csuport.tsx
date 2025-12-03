@@ -1,18 +1,35 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect,  useState } from "react";
 
 const Customersuport = () => {
-  const whatsappNumber = "917440505220";
+   const [whatsapp, setWhatsapp] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchNumber = async () => {
+      try {
+        // API route: GET /api/whatsapp
+        const res = await axios.get("/api/whatsapp");
+        // res.data may be a mongoose doc or an object with fields
+        setWhatsapp(res.data || null);
+      } catch (error) {
+        console.error("Failed to fetch WhatsApp number", error);
+        setWhatsapp(null);
+      }
+    };
+
+    fetchNumber();
+  }, []);
 
   const SupportMessage = `Hello Sir,
   Crex247 Customer Support
   Get in touch with crex247 for any Queries, Emergencies, 
   Feedback or Complaints. We are here to help you 24/7 with our online services.`;
-
- 
-
-  const suportLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    SupportMessage
-  )}`;
+  const supportNumber = whatsapp?.support || "";
+  const suportLink = supportNumber
+    ? `https://wa.me/${supportNumber}?text=${encodeURIComponent(
+        SupportMessage
+      )}`
+    : "#";
   
   return (
     <div className="container-fluid py-4 bg-dark text-white shadow rounded">

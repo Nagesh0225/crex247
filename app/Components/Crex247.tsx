@@ -28,9 +28,9 @@ const Crex247: React.FC = () => {
                 India's No.1 sports ID provider since 2008
               </p>
             </div>
-            <p className="fw-bold fs-5 mb-2" style={{ color: "#fff700" }}>
+            {/* <p className="fw-bold fs-5 mb-2" style={{ color: "#fff700" }}>
               India's No.1 Sports ID Provider Since 2008
-            </p>
+            </p> */}
             <p className="mb-2 fs-6" style={{ color: "#ffd700" }}>
               Crex247 Customer Support
             </p>

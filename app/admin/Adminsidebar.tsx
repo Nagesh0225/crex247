@@ -1,73 +1,93 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, createContext, useContext, ReactNode } from "react";
 import Link from "next/link";
 
-const AdminLayout = ({ children }: { children: React.ReactNode }) => {
+interface SearchContextType {
+  searchQuery: string;
+  setSearchQuery: (q: string) => void;
+}
+
+const SearchContext = createContext<SearchContextType>({
+  searchQuery: "",
+  setSearchQuery: () => {},
+});
+
+export const useAdminSearch = () => useContext(SearchContext);
+
+interface AdminLayoutProps {
+  children: ReactNode;
+}
+
+const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="d-flex min-vh-100">
+    <SearchContext.Provider value={{ searchQuery, setSearchQuery }}>
+      <div className="d-flex min-vh-100">
+        {/* SIDEBAR */}
+        <div
+          className={`bg-dark text-white p-3 sidebar ${
+            open ? "d-block" : "d-none d-md-block"
+          }`}
+          style={{ width: "240px" }}
+        >
+          <h4 className="text-center mb-4">Admin Panel</h4>
+          <ul className="nav flex-column gap-2">
+            <li className="nav-item">
+              <Link href="/admin" className="nav-link text-white">
+                📊 Dashboard
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/admin/dicerolls" className="nav-link text-white">
+                🎲 Dice Rolls
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/admin/whatsappnumber" className="nav-link text-white">
+                📞 WhatsApp Number
+              </Link>
+            </li>
+          </ul>
+        </div>
 
-      {/* ✅ SIDEBAR */}
-      <div
-        className={`bg-dark text-white p-3 sidebar ${
-          open ? "d-block" : "d-none d-md-block"
-        }`}
-        style={{ width: "240px" }}
-      >
-        <h4 className="text-center mb-4">Admin Panel</h4>
+        {/* MAIN CONTENT */}
+        <div className="flex-grow-1">
+          {/* HEADER */}
+          <header className="bg-primary text-white d-flex align-items-center justify-content-between px-3 py-2 shadow">
+            <button
+              className="btn btn-light d-md-none"
+              onClick={() => setOpen(!open)}
+            >
+              ☰
+            </button>
+            <h5 className="mb-0">Admin Dashboard</h5>
+            <button className="btn btn-danger btn-sm">Logout</button>
+          </header>
 
-        <ul className="nav flex-column gap-2">
-          <li className="nav-item">
-            <Link href="/admin" className="nav-link text-white">
-              📊 Dashboard
-            </Link>
-          </li>
+          {/* SEARCH INPUT */}
+      <div className="bg-light p-2 shadow-sm">
+  <div className="container text-center">
+    <input
+      type="text"
+      className="form-control"
+      placeholder="🔍 Search ..."
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      style={{
+        maxWidth: "350px", 
+        width: "100%",      
+        margin: "",   
+      }}
+    />
+  </div>
+</div>
 
-          <li className="nav-item">
-            <Link href="/admin/users" className="nav-link text-white">
-              👤 Users
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link href="/admin/rolls" className="nav-link text-white">
-              🎲 Dice Rolls
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link href="/admin/settings" className="nav-link text-white">
-              ⚙️ Settings
-            </Link>
-          </li>
-        </ul>
+          <main className="p-3 bg-light min-vh-100">{children}</main>
+        </div>
       </div>
-
-      {/* ✅ MAIN CONTENT AREA */}
-      <div className="flex-grow-1">
-
-        {/* ✅ HEADER */}
-        <header className="bg-primary text-white d-flex align-items-center justify-content-between px-3 py-2 shadow">
-          <button
-            className="btn btn-light d-md-none"
-            onClick={() => setOpen(!open)}
-          >
-            ☰
-          </button>
-
-          <h5 className="mb-0">Admin Dashboard</h5>
-
-          <button className="btn btn-danger btn-sm">Logout</button>
-        </header>
-
-        {/* ✅ PAGE CONTENT */}
-        <main className="p-3 bg-light min-vh-100">
-          {children}
-        </main>
-
-      </div>
-    </div>
+    </SearchContext.Provider>
   );
 };
 

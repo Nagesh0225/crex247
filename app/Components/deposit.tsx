@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
 
 const Deposit = () => {
-  const whatsappNumber = "917440505220";
+   const [whatsapp, setWhatsapp] = useState<any>(null);
+   useEffect(() => {
+    const fetchNumber = async () => {
+      try {
+       
+        const res = await axios.get("/api/whatsapp");
+      
+        setWhatsapp(res.data || null);
+      } catch (error) {
+        console.error("Failed to fetch WhatsApp number", error);
+        setWhatsapp(null);
+      }
+    };
 
+    fetchNumber();
+  }, []);
   const depositMessage = `Hello Sir,
 I need help with *DEPOSIT*.
 
@@ -16,10 +32,13 @@ I need help with *DEPOSIT*.
 Please check and confirm my deposit.`;
 
  
+const supportNumber = whatsapp?.deposit || "";
+  const depositLink = supportNumber
+    ? `https://wa.me/${supportNumber}?text=${encodeURIComponent(
+        depositMessage
+      )}`
+    : "#";
 
-  const depositLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    depositMessage
-  )}`;
   
   return (
     <div className="container-fluid py-4 bg-dark text-white shadow rounded">

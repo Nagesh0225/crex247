@@ -18,6 +18,11 @@ const RollSchema = new Schema(
       type: String,
       required: true,
     },
+
+    claimed: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
