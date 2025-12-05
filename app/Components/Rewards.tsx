@@ -25,30 +25,27 @@ const rotations: Record<DiceNumber, string> = {
 const generateInstantId = () =>
   "CRX" + Math.floor(100000 + Math.random() * 900000);
 
-const Rewards: React.FC = () => {
+interface RewardsProps {
+  adminId: string;
+}
+
+const Rewards: React.FC<RewardsProps> = ({ adminId }) => {
   const [number, setNumber] = useState<DiceNumber>(1);
   const [rolling, setRolling] = useState(false);
   const [reward, setReward] = useState<number>(0);
   const [instantId, setInstantId] = useState("");
-
   const [rewardMap, setRewardMap] = useState<Record<DiceNumber, number>>({
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 0,
+    1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0,
   });
   const [whatsapp, setWhatsapp] = useState<any>(null);
+
   const audioRef = useRef<HTMLAudioElement>(null);
 
- useEffect(() => {
+  useEffect(() => {
     const fetchRewards = async () => {
       try {
         const res = await axios.get("/api/dice-reward");
-        const data: Record<DiceNumber, number> = {
-          1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0
-        };
+        const data: Record<DiceNumber, number> = {1:0,2:0,3:0,4:0,5:0,6:0};
         res.data.forEach((item: { diceNumber: DiceNumber; percent: number }) => {
           data[item.diceNumber] = item.percent;
         });
@@ -61,16 +58,18 @@ const Rewards: React.FC = () => {
   useEffect(() => {
     const fetchWhatsApp = async () => {
       try {
-        const res = await axios.get("/api/whatsapp");
+        const res = await axios.get(`/api/whatsapp?adminId=${adminId}`);
         setWhatsapp(res.data || null);
-      } catch {}
+      } catch {
+        setWhatsapp(null);
+      }
     };
     fetchWhatsApp();
-  }, []);
-
+  }, [adminId]);
 
   const rollDice = async () => {
     if (rolling) return;
+
     setRolling(true);
     setReward(0);
     setInstantId("");
@@ -80,45 +79,39 @@ const Rewards: React.FC = () => {
       audioRef.current.play();
     }
 
-    const finalNumber = Math.floor(Math.random() * 6) + 1 as DiceNumber;
+    const finalNumber = (Math.floor(Math.random() * 6) + 1) as DiceNumber;
 
-    setTimeout(async () => {
+    setTimeout(() => {
       const rewardValue = rewardMap[finalNumber];
-      const newId = generateInstantId();
-
       setNumber(finalNumber);
       setReward(rewardValue);
+
+      // ✅ Generate instantId turant
+      const newId = generateInstantId();
       setInstantId(newId);
 
-      try {
-        await axios.post("/api/admin/rolls", {
-          number: finalNumber,
-          reward: rewardValue,
-          code: newId,
-          instantId: newId,
-        });
-      } catch {}
+      // ✅ Send to backend with adminId (always)
+      axios.post("/api/admin/rolls", {
+        number: finalNumber,
+        reward: rewardValue,
+        code: newId,
+        instantId: newId,
+        adminId: adminId,
+      }).catch(() => {});
 
       setRolling(false);
     }, 800);
   };
 
   const sendToWhatsApp = () => {
-    if (!instantId) return;
-    const supportNumber = whatsapp?.newCustomer || "";
+    if (!instantId || !whatsapp) return;
+    const supportNumber = whatsapp.number || whatsapp?.newCustomer || "";
     const waLink =
       "https://wa.me/" +
       supportNumber +
       "?text=" +
       encodeURIComponent(
-        `New Instant Sports ID Request
-
-🆔 Instant ID: ${instantId}
-🎲 Dice Number: ${number}
-💰 Dice Reward: ${reward}%
-🎁 Bonus: ₹10000
-
-Please activate this ID: ${instantId}`
+        `New Instant Sports ID Request\n\n🆔 Instant ID: ${instantId}\n🎲 Dice Number: ${number}\n💰 Dice Reward: ${reward}%`
       );
     window.open(waLink, "_blank");
   };
@@ -131,12 +124,9 @@ Please activate this ID: ${instantId}`
           🎁 New users can get up to a ₹10000 bonus! 🎁<br />
           <span style={{ fontSize: "0.95rem" }}>Roll the dice to unlock your instant ID and claim your bonus.</span>
         </div>
-           <div className="dice-scene mx-auto mb-2" onClick={rollDice}>
-          <div
-            className={`dice ${rolling ? "rolling" : ""}`}
-            style={{ transform: rotations[number] }}
-          >
-            {[1, 2, 3, 4, 5, 6].map((face) => (
+        <div className="dice-scene mx-auto mb-2" onClick={rollDice}>
+          <div className={`dice ${rolling ? "rolling" : ""}`} style={{ transform: rotations[number] }}>
+            {[1,2,3,4,5,6].map((face) => (
               <div key={face} className={`face face-${face}`}>
                 {dotPositions[face as DiceNumber].map(([x, y], i) => (
                   <span key={i} className="dot" style={{ top: `${y}%`, left: `${x}%` }} />
@@ -145,19 +135,19 @@ Please activate this ID: ${instantId}`
             ))}
           </div>
         </div>
-         <div className="d-flex flex-column align-items-center gap-3 mt-4">
+
+        <div className="d-flex flex-column align-items-center gap-3 mt-4">
           <button disabled={!instantId} className="btn w-100 fw-bold" style={{ fontSize: "1rem", background: "linear-gradient(90deg, #ffd700 60%, #fff700 100%)", color: "#232526", borderRadius: "24px", boxShadow: "0 0 8px #ffd700" }}>
             📲 Get an instant id now
           </button>
           <div className="mt-2 bg-success text-white rounded py-2 px-2 small d-flex gap-4 fw-bold justify-content-between" style={{ border: "2px solid #ffd700" }}>
-            <span>Get ID: {instantId && instantId}</span>
+            <span>Get ID: {instantId}</span>
             <div>
               <button onClick={sendToWhatsApp} disabled={!instantId} className="btn btn-light btn-sm fw-bold" style={{ background: "linear-gradient(90deg, #25d366 60%, #128c7e 100%)", color: "#232526", borderRadius: "16px", boxShadow: "0 0 8px #25d366" }}>
                 WhatsApp
               </button>
             </div>
           </div>
-  
         </div>
       </div>
     </div>
@@ -165,4 +155,3 @@ Please activate this ID: ${instantId}`
 };
 
 export default Rewards;
-

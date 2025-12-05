@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="container-fluid d-flex flex-column justify-content-center align-items-center p-0 m-0">
       <Header />
-      <Crex247 />
+      <Crex247 adminId="your-admin-id" />
     </div>
   );
 }

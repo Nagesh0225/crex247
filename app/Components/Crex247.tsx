@@ -1,10 +1,15 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import RewardDice from "./Rewards";
 import Deposit from "./deposit";
 import Withdraw from "./Withdrow";
 import Customersuport from "./Csuport";
 
-const Crex247: React.FC = () => {
+interface Crex247Props {
+  adminId: string;
+}
+
+const Crex247: React.FC<Crex247Props> = ({ adminId }) => {
   const [isNewCustomer, setIsNewCustomer] = useState(false);
 
   useEffect(() => {
@@ -28,15 +33,7 @@ const Crex247: React.FC = () => {
                 India's No.1 sports ID provider since 2008
               </p>
             </div>
-            {/* <p className="fw-bold fs-5 mb-2" style={{ color: "#fff700" }}>
-              India's No.1 Sports ID Provider Since 2008
-            </p> */}
-            <p className="mb-2 fs-6" style={{ color: "#ffd700" }}>
-              Crex247 Customer Support
-            </p>
-            <p className="mb-3 small text-light">
-              Get in touch with Crex247 for any Queries, Emergencies, Feedback or Complaints. We are here to help you 24/7 with our online services.
-            </p>
+        
             <div className="row justify-content-center mt-4">
               <div className="col-12 col-md-10 col-lg-7">
                 {isNewCustomer && (
@@ -45,7 +42,7 @@ const Crex247: React.FC = () => {
                   </div>
                 )}
                 <div className="bg-dark p-3 rounded shadow-lg" style={{ border: "2px solid #ffd700" }}>
-                  <RewardDice />
+                  <RewardDice adminId={adminId} />
                 </div>
               </div>
             </div>

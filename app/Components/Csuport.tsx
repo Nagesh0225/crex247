@@ -46,11 +46,11 @@ const Customersuport = () => {
           </div>
 
           <div className="col-12 col-md-5 mb-3 mb-md-0 text-center">
-            <h5 className="fw-bold mb-1 text-warning">
-              Need Help With Customer Support?
-            </h5>
-            <p className="small mb-0 text-light">
-              For directly chat with support on WhatsApp.
+             <p className="mb-2 fs-6" style={{ color: "#ffd700" }}>
+              Crex247 Customer Support
+            </p>
+            <p className="mb-3 small text-light">
+              Get in touch with Crex247 for any Queries, Emergencies, Feedback or Complaints. We are here to help you 24/7 with our online services.
             </p>
           </div>
 

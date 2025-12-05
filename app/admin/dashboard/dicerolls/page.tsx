@@ -85,7 +85,7 @@ const DiceRolls = () => {
 
   return (
     <div className="container-fluid">
-      <h3 className="mb-4">🎯 Dice Reward Control Panel</h3>
+      <h3 className="mb-4"> Dice Reward Control Panel</h3>
 
       <div className="card p-3 shadow-sm mb-4">
         <div className="row">

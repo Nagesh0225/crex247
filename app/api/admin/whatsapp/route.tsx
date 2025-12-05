@@ -1,49 +1,75 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/db";
-import Whatsapp from "@/app/models/Whatsapp";
+import {
+  WhatsappV1,
+  WhatsappV2,
+  WhatsappV3,
+  WhatsappV4,
+} from "@/app/models/Whatsapp";
 
-export async function GET() {
+// ✅ GET API
+export async function GET(req: Request) {
   try {
     await connectDB();
-    const data = await Whatsapp.findOne();
-    if (!data) return NextResponse.json({ newCustomer: "", deposit: "", withdrawal: "", support: "" });
-    return NextResponse.json(data);
+
+    const { searchParams } = new URL(req.url);
+    const version = searchParams.get("version");
+
+    let Model;
+
+    if (version === "v1") Model = WhatsappV1;
+    else if (version === "v2") Model = WhatsappV2;
+    else if (version === "v3") Model = WhatsappV3;
+    else if (version === "v4") Model = WhatsappV4;
+    else {
+      return NextResponse.json(
+        { message: "version required" },
+        { status: 400 }
+      );
+    }
+
+    const data = await Model.findOne();
+
+    return NextResponse.json(
+      data || { newCustomer: "", deposit: "", withdrawal: "", support: "" },
+      { status: 200 }
+    );
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ message: "Failed to fetch" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to fetch WhatsApp numbers" },
+      { status: 500 }
+    );
   }
 }
 
+// ✅ POST API
 export async function POST(req: Request) {
   try {
     await connectDB();
+
     const body = await req.json();
-    await Whatsapp.findOneAndUpdate({}, body, { upsert: true, new: true });
-    return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ success: false }, { status: 500 });
-  }
-}
+    const { version } = body;
 
-export async function PUT(req: Request) {
-  try {
-    await connectDB();
-    const { id, ...rest } = await req.json();
-    await Whatsapp.findByIdAndUpdate(id, rest);
-    return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ success: false }, { status: 500 });
-  }
-}
+    let Model;
 
-export async function DELETE(req: Request) {
-  try {
-    await connectDB();
-    const { id } = await req.json();
-    await Whatsapp.findByIdAndDelete(id);
-    return NextResponse.json({ success: true });
+    if (version === "v1") Model = WhatsappV1;
+    else if (version === "v2") Model = WhatsappV2;
+    else if (version === "v3") Model = WhatsappV3;
+    else if (version === "v4") Model = WhatsappV4;
+    else {
+      return NextResponse.json(
+        { success: false, message: "version required" },
+        { status: 400 }
+      );
+    }
+
+    await Model.findOneAndUpdate({}, body, {
+      upsert: true,
+      new: true,
+    });
+
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ success: false }, { status: 500 });
