@@ -1,15 +1,13 @@
 import axios from "axios";
 import React, { useEffect,  useState } from "react";
 
-const Customersuport = () => {
-   const [whatsapp, setWhatsapp] = useState<any>(null);
+const Customersuport: React.FC<{ version: string }> = ({ version }) => {
+  const [whatsapp, setWhatsapp] = useState<any>(null);
 
   useEffect(() => {
     const fetchNumber = async () => {
       try {
-        // API route: GET /api/whatsapp
-        const res = await axios.get("/api/whatsapp");
-        // res.data may be a mongoose doc or an object with fields
+        const res = await axios.get(`/api/whatsapp?version=${version}`);
         setWhatsapp(res.data || null);
       } catch (error) {
         console.error("Failed to fetch WhatsApp number", error);
@@ -18,7 +16,7 @@ const Customersuport = () => {
     };
 
     fetchNumber();
-  }, []);
+  }, [version]);
 
   const SupportMessage = `Hello Sir,
   Crex247 Customer Support

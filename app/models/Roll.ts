@@ -1,11 +1,17 @@
-
 import mongoose, { Schema } from "mongoose";
 
 const RollSchemaV1 = new Schema({
   number: { type: Number, required: true },
   reward: { type: Number, required: true },
   code: { type: String, required: true },
-  instantId: { type: String, required: true },
+  instantId: {
+    type: String,
+    required: true,
+  },
+  version: {
+    type: String,
+    required: true,
+  },
   claimed: { type: Boolean, default: false },
 }, { timestamps: true });
 
@@ -13,7 +19,14 @@ const RollSchemaV2 = new Schema({
   number: { type: Number, required: true },
   reward: { type: Number, required: true },
   code: { type: String, required: true },
-  instantId: { type: String, required: true },
+  instantId: {
+    type: String,
+    required: true,
+  },
+  version: {
+    type: String,
+    required: true,
+  },
   claimed: { type: Boolean, default: false },
 }, { timestamps: true });
 
@@ -21,7 +34,14 @@ const RollSchemaV3 = new Schema({
   number: { type: Number, required: true },
   reward: { type: Number, required: true },
   code: { type: String, required: true },
-  instantId: { type: String, required: true },
+  instantId: {
+    type: String,
+    required: true,
+  },
+  version: {
+    type: String,
+    required: true,
+  },
   claimed: { type: Boolean, default: false },
 }, { timestamps: true });
 
@@ -29,7 +49,14 @@ const RollSchemaV4 = new Schema({
   number: { type: Number, required: true },
   reward: { type: Number, required: true },
   code: { type: String, required: true },
-  instantId: { type: String, required: true },
+  instantId: {
+    type: String,
+    required: true,
+  },
+  version: {
+    type: String,
+    required: true,
+  },
   claimed: { type: Boolean, default: false },
 }, { timestamps: true });
 

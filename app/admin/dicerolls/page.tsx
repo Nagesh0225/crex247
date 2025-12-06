@@ -9,7 +9,7 @@ interface DiceRewardFromDB {
   percent: number;
 }
 
-const DiceRolls = () => {
+const DiceRolls = ({ version = "v1" }: { version?: string }) => {
   const [rewardPercent, setRewardPercent] = useState<Record<DiceNumber, number>>({
     1: 0,
     2: 0,
@@ -21,13 +21,12 @@ const DiceRolls = () => {
 
   const [loading, setLoading] = useState(false);
   const [savedRewards, setSavedRewards] = useState<DiceRewardFromDB[]>([]);
-  const [saveMessage, setSaveMessage] = useState(""); // ✅ Inline message
+  const [saveMessage, setSaveMessage] = useState("");
   const diceNumbers: DiceNumber[] = [1, 2, 3, 4, 5, 6];
 
-  /* Load Data From DB */
   const fetchRewards = async () => {
     try {
-      const res = await axios.get<DiceRewardFromDB[]>("/api/dice-reward");
+      const res = await axios.get<DiceRewardFromDB[]>(`/api/dice-reward?version=${version}`);
 
       const data: Record<DiceNumber, number> = {
         1: 0,
@@ -67,8 +66,7 @@ const DiceRolls = () => {
         diceNumber: num,
         percent: rewardPercent[num],
       }));
-
-      await axios.post("/api/dice-reward/save", payload);
+      await axios.post("/api/dice-reward/save", { version, rewards: payload });
 
       setSaveMessage(" Reward Percentage Saved Successfully!"); // ✅ Inline message
       fetchRewards(); // refresh table
@@ -85,7 +83,7 @@ const DiceRolls = () => {
 
   return (
     <div className="container-fluid">
-      <h3 className="mb-4"> Dice Reward Control Panel</h3>
+      <h3 className="mb-4">🎯 Dice Reward Control Panel</h3>
 
       <div className="card p-3 shadow-sm mb-4">
         <div className="row">

@@ -5,26 +5,29 @@ export interface IWhatsapp extends Document {
   deposit: string;
   withdrawal: string;
   support: string;
-  number: string;   // MAIN number (required)
+  version: string;
 }
 
-const schema = new Schema<IWhatsapp>({
-  newCustomer: String,
-  deposit: String,
-  withdrawal: String,
-  support: String,
-  number: { type: String, required: true },
+const whatsappSchema = new Schema<IWhatsapp>({
+  newCustomer: { type: String, required: true },
+  deposit: { type: String, required: true },
+  withdrawal: { type: String, required: true },
+  support: { type: String, required: true },
+  version: { type: String, required: true, unique: true },
 }, { timestamps: true });
 
-// 4 alag collections for 4 admins
+export const Whatsapp =
+  (mongoose.models.Whatsapp as mongoose.Model<IWhatsapp>) ||
+  mongoose.model<IWhatsapp>("Whatsapp", whatsappSchema);
+
 export const WhatsappV1 =
-  mongoose.models.WhatsappV1 || mongoose.model<IWhatsapp>("WhatsappV1", schema);
+  mongoose.models.WhatsappV1 || mongoose.model<IWhatsapp>("WhatsappV1", whatsappSchema);
 
 export const WhatsappV2 =
-  mongoose.models.WhatsappV2 || mongoose.model<IWhatsapp>("WhatsappV2", schema);
+  mongoose.models.WhatsappV2 || mongoose.model<IWhatsapp>("WhatsappV2", whatsappSchema);
 
 export const WhatsappV3 =
-  mongoose.models.WhatsappV3 || mongoose.model<IWhatsapp>("WhatsappV3", schema);
+  mongoose.models.WhatsappV3 || mongoose.model<IWhatsapp>("WhatsappV3", whatsappSchema);
 
 export const WhatsappV4 =
-  mongoose.models.WhatsappV4 || mongoose.model<IWhatsapp>("WhatsappV4", schema);
+  mongoose.models.WhatsappV4 || mongoose.model<IWhatsapp>("WhatsappV4", whatsappSchema);

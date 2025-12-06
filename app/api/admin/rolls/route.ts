@@ -47,6 +47,7 @@ export async function POST(req: Request) {
       reward,
       code,
       instantId,
+      version,
       claimed: false,
     });
     return NextResponse.json({ roll }, { status: 201 });

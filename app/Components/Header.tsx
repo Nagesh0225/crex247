@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const Header: React.FC = () => {
+const Header: React.FC<{version: string}> = ({version}) => {
   const [whatsapp, setWhatsapp] = useState<any>(null);
 
   // ✅ FETCH NUMBER FROM BACKEND
@@ -10,7 +10,7 @@ const Header: React.FC = () => {
     const fetchNumber = async () => {
       try {
        
-        const res = await axios.get("/api/whatsapp");
+        const res = await axios.get(`/api/whatsapp?version=${version}`);
         
         setWhatsapp(res.data || null);
       } catch (error) {

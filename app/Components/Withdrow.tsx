@@ -2,16 +2,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const Withdrow = () => {
+const Withdrow: React.FC<{ version: string }> = ({ version }) => {
   const [whatsapp, setWhatsapp] = useState<any>(null);
 
- 
   useEffect(() => {
     const fetchNumber = async () => {
       try {
-        
-        const res = await axios.get("/api/whatsapp");
-       
+        const res = await axios.get(`/api/whatsapp?version=${version}`);
+
         setWhatsapp(res.data || null);
       } catch (error) {
         console.error("Failed to fetch WhatsApp number", error);
@@ -20,8 +18,7 @@ const Withdrow = () => {
     };
 
     fetchNumber();
-  }, []);
-
+  }, [version]);
 
   const withdrawMessage = `Hello Sir,
 I need help with *WITHDRAW*.

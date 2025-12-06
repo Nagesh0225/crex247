@@ -27,9 +27,10 @@ const generateInstantId = () =>
 
 interface RewardsProps {
   adminId: string;
+  version: string;
 }
 
-const Rewards: React.FC<RewardsProps> = ({ adminId }) => {
+const Rewards: React.FC<RewardsProps> = ({ adminId, version }) => {
   const [number, setNumber] = useState<DiceNumber>(1);
   const [rolling, setRolling] = useState(false);
   const [reward, setReward] = useState<number>(0);
@@ -44,7 +45,7 @@ const Rewards: React.FC<RewardsProps> = ({ adminId }) => {
   useEffect(() => {
     const fetchRewards = async () => {
       try {
-        const res = await axios.get("/api/dice-reward");
+        const res = await axios.get(`/api/dice-reward?version=${version}`);
         const data: Record<DiceNumber, number> = {1:0,2:0,3:0,4:0,5:0,6:0};
         res.data.forEach((item: { diceNumber: DiceNumber; percent: number }) => {
           data[item.diceNumber] = item.percent;
@@ -58,7 +59,7 @@ const Rewards: React.FC<RewardsProps> = ({ adminId }) => {
   useEffect(() => {
     const fetchWhatsApp = async () => {
       try {
-        const res = await axios.get(`/api/whatsapp?adminId=${adminId}`);
+        const res = await axios.get(`/api/whatsapp?version=${version}&adminId=${adminId}`);
         setWhatsapp(res.data || null);
       } catch {
         setWhatsapp(null);
@@ -97,6 +98,7 @@ const Rewards: React.FC<RewardsProps> = ({ adminId }) => {
         code: newId,
         instantId: newId,
         adminId: adminId,
+        version: version,
       }).catch(() => {});
 
       setRolling(false);
@@ -117,7 +119,7 @@ const Rewards: React.FC<RewardsProps> = ({ adminId }) => {
   };
 
   return (
-    <div className="d-flex justify-content-center" style={{ background: "linear-gradient(135deg, #232526 0%, #414345 100%)", minHeight: "100vh" }}>
+    <div className="d-flex justify-content-center" style={{ background: "linear-gradient(135deg, #232526 0%, #414345 100%)", minHeight: "50vh" }}>
       <div className="text-center w-100" style={{ maxWidth: 400, padding: "2rem 0" }}>
         <audio ref={audioRef} src="/scroller.mp3" />
         <div className="alert fw-bold py-3 mb-3" style={{ background: "linear-gradient(90deg, #ffd700 60%, #fff700 100%)", color: "#232526", fontSize: "1.1rem", borderRadius: "12px", boxShadow: "0 0 8px #ffd700" }}>

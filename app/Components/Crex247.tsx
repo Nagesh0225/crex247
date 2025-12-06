@@ -7,9 +7,10 @@ import Customersuport from "./Csuport";
 
 interface Crex247Props {
   adminId: string;
+  version: string;
 }
 
-const Crex247: React.FC<Crex247Props> = ({ adminId }) => {
+const Crex247: React.FC<Crex247Props> = ({ adminId,version }) => {
   const [isNewCustomer, setIsNewCustomer] = useState(false);
 
   useEffect(() => {
@@ -42,24 +43,24 @@ const Crex247: React.FC<Crex247Props> = ({ adminId }) => {
                   </div>
                 )}
                 <div className="bg-dark p-3 rounded shadow-lg" style={{ border: "2px solid #ffd700" }}>
-                  <RewardDice adminId={adminId} />
+                  <RewardDice adminId={adminId} version={version} />
                 </div>
               </div>
             </div>
             <div className="row mt-4 g-3">
               <div className="col-12 col-md-6">
                 <div className="bg-success p-3 rounded shadow-lg text-white text-center h-100" style={{ border: "2px solid #ffd700" }}>
-                  <Deposit />
+                  <Deposit version={version} />
                 </div>
               </div>
               <div className="col-12 col-md-6">
                 <div className="bg-warning p-3 rounded shadow-lg text-dark text-center h-100" style={{ border: "2px solid #ffd700" }}>
-                  <Withdraw />
+                  <Withdraw version={version} />
                 </div>
               </div>
               <div className="col-12 col-md-8 text-center mx-auto">
                 <div className="bg-dark p-3 rounded shadow-lg text-white text-center h-100" style={{ border: "2px solid #ffd700" }}>
-                  <Customersuport />
+                  <Customersuport version={version} />
                 </div>
               </div>
             </div>
