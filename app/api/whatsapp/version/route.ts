@@ -15,10 +15,12 @@ const modelMap: any = {
 };
 
 // GET (Fetch WhatsApp numbers)
-export async function GET(req: NextRequest, { params }: { params: { version: string } }) {
+export async function GET(req: NextRequest) {
   try {
     await connectDB();
-    const Model = modelMap[params.version];
+    const url = new URL(req.url);
+    const version = url.searchParams.get("version") || "v1";
+    const Model = modelMap[version];
 
     if (!Model)
       return NextResponse.json({ error: "Invalid version" }, { status: 400 });
@@ -42,10 +44,12 @@ export async function GET(req: NextRequest, { params }: { params: { version: str
 }
 
 // POST — Create or Update WhatsApp numbers
-export async function POST(req: NextRequest, { params }: { params: { version: string } }) {
+export async function POST(req: NextRequest) {
   try {
     await connectDB();
-    const Model = modelMap[params.version];
+    const url = new URL(req.url);
+    const version = url.searchParams.get("version") || "v1";
+    const Model = modelMap[version];
 
     if (!Model)
       return NextResponse.json({ error: "Invalid version" }, { status: 400 });
