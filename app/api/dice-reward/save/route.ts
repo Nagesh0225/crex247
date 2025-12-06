@@ -5,7 +5,6 @@ import DiceReward from "@/app/models/DiceReward";
 export async function POST(req: Request) {
   try {
     await connectDB();
-    // Ensure indexes are in sync (apply compound unique index and remove stale ones)
     await DiceReward.syncIndexes();
     const body = await req.json();
     const { version, rewards } = body;
